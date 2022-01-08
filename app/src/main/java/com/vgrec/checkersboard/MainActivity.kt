@@ -39,6 +39,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+enum class Action {
+    READY_TO_PICK,
+    READY_TO_PLACE
+}
+
 enum class Piece {
     WHITE,
     BLACK,
@@ -99,18 +104,18 @@ fun CheckersBoards(name: String) {
             Row {
                 (0 until cols).map { colIndex: Int ->
                     val square: Square = board[rowIndex][colIndex]
-                    var pieceSymbol = ""
-                    square.piece?.let { piece ->
-                        pieceSymbol = if (piece == Piece.WHITE) {
+
+                    val symbol: String = square.piece?.let { piece ->
+                        if (piece == Piece.WHITE) {
                             "w"
                         } else {
                             "b"
                         }
-                    }
+                    } ?: ""
 
                     Text(
                         textAlign = TextAlign.Center,
-                        text = AnnotatedString(pieceSymbol),
+                        text = AnnotatedString(symbol),
                         modifier = Modifier
                             .background(color = square.color)
                             .width(40.dp)
