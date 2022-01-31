@@ -30,21 +30,54 @@ class MainViewModel : ViewModel() {
     private val gameRules: GameRules = CommonGameRules()
 
     init {
-        buildInitialBoard()
+        buildInitialBoard(
+            opponentPieceColor = PieceColor.LIGHT,
+            myPieceColor = PieceColor.DARK
+        )
     }
 
-    private fun buildInitialBoard() {
-        val initialLightPiecePositions = listOf(
-            Pair(0, 1), Pair(0, 3), Pair(0, 5), Pair(0, 7),
-            Pair(1, 0), Pair(1, 2), Pair(1, 4), Pair(1, 6),
-            Pair(2, 1), Pair(2, 3), Pair(2, 5), Pair(2, 7)
+    private fun getStartingPositionsForOpponentPieces(): List<Position> {
+        return getStartingPositionsForPieces(
+            startingRow = 0,
+            totalRows = 3,
+            piecesPerRow = 4
         )
+    }
 
-        val initialDarkPiecePositions = listOf(
-            Pair(5, 0), Pair(5, 2), Pair(5, 4), Pair(5, 6),
-            Pair(6, 1), Pair(6, 3), Pair(6, 5), Pair(6, 7),
-            Pair(7, 0), Pair(7, 2), Pair(7, 4), Pair(7, 6),
+    private fun getStartingPositionsForMyPieces(): List<Position> {
+        return getStartingPositionsForPieces(
+            startingRow = 5,
+            totalRows = 3,
+            piecesPerRow = 4
         )
+    }
+
+    private fun getStartingPositionsForPieces(
+        startingRow: Int,
+        totalRows: Int,
+        piecesPerRow: Int,
+    ): List<Position> {
+        return mutableListOf<Position>().apply {
+            (startingRow until startingRow + totalRows).forEach { row ->
+                val startingColumn = if (row % 2 == 0) 1 else 0
+
+                (startingColumn until piecesPerRow * 2)
+                    .step(2)
+                    .forEach { col ->
+                        add(
+                            Position(
+                                rowIndex = row,
+                                colIndex = col
+                            )
+                        )
+                    }
+            }
+        }
+    }
+
+    private fun buildInitialBoard(opponentPieceColor: PieceColor, myPieceColor: PieceColor) {
+        val opponentStartingPositions: List<Position> = getStartingPositionsForOpponentPieces()
+        val myStartingPositions: List<Position> = getStartingPositionsForMyPieces()
 
         val board = Array(BOARD_SIZE) { Array(BOARD_SIZE) { Square(color = Color.White) } }
         (0 until BOARD_SIZE).forEach { row ->
@@ -55,14 +88,14 @@ class MainViewModel : ViewModel() {
                     if (col % 2 != 0) LIGHT_SQUARE_COLOR else DARK_SQUARE_COLOR
                 }
 
-                val currentPosition = Pair(row, col)
+                val currentPosition = Position(row, col)
                 val piece: Piece? = when {
-                    initialLightPiecePositions.contains(currentPosition) -> Piece(
-                        color = PieceColor.LIGHT,
+                    opponentStartingPositions.contains(currentPosition) -> Piece(
+                        color = opponentPieceColor,
                         rank = PieceRank.MAN
                     )
-                    initialDarkPiecePositions.contains(currentPosition) -> Piece(
-                        color = PieceColor.DARK,
+                    myStartingPositions.contains(currentPosition) -> Piece(
+                        color = myPieceColor,
                         rank = PieceRank.MAN
                     )
                     else -> null // empty square
