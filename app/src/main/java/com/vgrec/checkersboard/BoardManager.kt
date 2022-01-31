@@ -17,8 +17,8 @@ class BoardManager {
         val myStartingPositions: List<Position> = getStartingPositionsForMyPieces()
 
         val board = Array(BOARD_SIZE) { Array(BOARD_SIZE) { Square(color = Color.White) } }
-        (0 until BOARD_SIZE).forEach { row ->
-            (0 until BOARD_SIZE).forEach { col ->
+        for (row in 0 until BOARD_SIZE) {
+            for (col in 0 until BOARD_SIZE) {
                 val color = if (row % 2 == 0) {
                     if (col % 2 == 0) LIGHT_SQUARE_COLOR else DARK_SQUARE_COLOR
                 } else {
@@ -70,20 +70,18 @@ class BoardManager {
         piecesPerRow: Int,
     ): List<Position> {
         return mutableListOf<Position>().apply {
-            (startingRow until startingRow + totalRows).forEach { row ->
+            val endingRow = startingRow + totalRows
+            for (row in startingRow until endingRow) {
                 val startingColumn = if (row % 2 == 0) 1 else 0
-
-                (startingColumn until piecesPerRow * 2)
-                    .step(2)
-                    .forEach { col ->
-                        add(
-                            Position(
-                                rowIndex = row,
-                                colIndex = col
-                            )
-                        )
-                    }
+                val endingColumn = piecesPerRow * 2
+                for (col in startingColumn until endingColumn step 2) {
+                    add(Position(
+                        rowIndex = row,
+                        colIndex = col
+                    ))
+                }
             }
         }
     }
+
 }
