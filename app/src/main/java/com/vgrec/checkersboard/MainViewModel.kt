@@ -11,15 +11,14 @@ import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
-import com.vgrec.checkersboard.rules.EnglishGameRules
+import com.vgrec.checkersboard.rules.CommonGameRules
 import com.vgrec.checkersboard.rules.GameRules
 
 data class UiState(
     val board: Array<Array<Square>>,
 )
 
-const val ROWS = 8
-const val COLS = 8
+const val BOARD_SIZE = 8
 
 private val LIGHT_SQUARE_COLOR = Color.White
 private val DARK_SQUARE_COLOR = Color.Green
@@ -28,7 +27,7 @@ class MainViewModel : ViewModel() {
     var uiState by mutableStateOf(UiState(board = emptyArray()))
         private set
 
-    private val gameRules: GameRules = EnglishGameRules()
+    private val gameRules: GameRules = CommonGameRules()
 
     init {
         buildInitialBoard()
@@ -47,9 +46,9 @@ class MainViewModel : ViewModel() {
             Pair(7, 0), Pair(7, 2), Pair(7, 4), Pair(7, 6),
         )
 
-        val board = Array(ROWS) { Array(COLS) { Square(color = Color.White) } }
-        (0 until ROWS).forEach { row ->
-            (0 until COLS).forEach { col ->
+        val board = Array(BOARD_SIZE) { Array(BOARD_SIZE) { Square(color = Color.White) } }
+        (0 until BOARD_SIZE).forEach { row ->
+            (0 until BOARD_SIZE).forEach { col ->
                 val color = if (row % 2 == 0) {
                     if (col % 2 == 0) LIGHT_SQUARE_COLOR else DARK_SQUARE_COLOR
                 } else {

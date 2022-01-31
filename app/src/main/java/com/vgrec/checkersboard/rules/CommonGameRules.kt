@@ -1,13 +1,13 @@
 package com.vgrec.checkersboard.rules
 
 import android.util.Log
-import com.vgrec.checkersboard.COLS
+import com.vgrec.checkersboard.BOARD_SIZE
 import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
 
-class EnglishGameRules : GameRules {
+class CommonGameRules : GameRules {
     override fun canPick(
         position: Position,
         board: Array<Array<Square>>,
@@ -74,7 +74,7 @@ class EnglishGameRules : GameRules {
             }
         }
 
-        if (prevRowIndex >= 0 && columnOnTheRightIndex < COLS) {
+        if (prevRowIndex >= 0 && columnOnTheRightIndex < BOARD_SIZE) {
             val square: Square = board[prevRowIndex][columnOnTheRightIndex]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(

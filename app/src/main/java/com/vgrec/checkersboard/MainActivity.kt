@@ -47,9 +47,9 @@ fun CheckersBoard(viewModel: MainViewModel) {
     val board = viewModel.uiState.board
 
     LazyColumn {
-        items((0 until ROWS).toList()) { rowIndex: Int ->
+        items((0 until BOARD_SIZE).toList()) { rowIndex: Int ->
             Row {
-                (0 until COLS).map { colIndex: Int ->
+                (0 until BOARD_SIZE).map { colIndex: Int ->
                     val square: Square = board[rowIndex][colIndex]
 
                     val symbol: String = square.piece?.let { piece ->
