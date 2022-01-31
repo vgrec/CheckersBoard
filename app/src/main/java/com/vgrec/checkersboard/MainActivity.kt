@@ -1,7 +1,6 @@
 package com.vgrec.checkersboard
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,12 +17,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.vgrec.checkersboard.model.Piece
+import com.vgrec.checkersboard.model.PieceColor
+import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
 import com.vgrec.checkersboard.ui.theme.CheckersBoardTheme
 
@@ -35,7 +33,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CheckersBoardTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     CheckersBoard(viewModel = mainViewModel)
                 }
@@ -56,7 +53,7 @@ fun CheckersBoard(viewModel: MainViewModel) {
                     val square: Square = board[rowIndex][colIndex]
 
                     val symbol: String = square.piece?.let { piece ->
-                        if (piece == Piece.LIGHT) {
+                        if (piece.color == PieceColor.LIGHT) {
                             "L"
                         } else {
                             "D"
@@ -71,7 +68,12 @@ fun CheckersBoard(viewModel: MainViewModel) {
                             .width(40.dp)
                             .height(40.dp)
                             .clickable {
-                                viewModel.handleClickAtPosition(rowIndex, colIndex)
+                                viewModel.handleClickAtPosition(
+                                    Position(
+                                        rowIndex = rowIndex,
+                                        colIndex = colIndex
+                                    )
+                                )
                             },
                     )
                 }

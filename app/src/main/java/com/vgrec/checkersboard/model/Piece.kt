@@ -1,6 +1,16 @@
 package com.vgrec.checkersboard.model
 
-enum class Piece {
+data class Piece(
+    val color: PieceColor,
+    val rank: PieceRank,
+)
+
+enum class PieceColor {
     LIGHT,
     DARK,
+}
+
+enum class PieceRank {
+    MAN,
+    KING
 }

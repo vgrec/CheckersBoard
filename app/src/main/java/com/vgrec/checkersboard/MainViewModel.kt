@@ -7,9 +7,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.vgrec.checkersboard.model.Piece
+import com.vgrec.checkersboard.model.PieceColor
+import com.vgrec.checkersboard.model.PieceRank
+import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
-import com.vgrec.checkersboard.rules.EnglishGameRule
-import com.vgrec.checkersboard.rules.GameRule
+import com.vgrec.checkersboard.rules.EnglishGameRules
+import com.vgrec.checkersboard.rules.GameRules
 
 data class UiState(
     val board: Array<Array<Square>>,
@@ -18,20 +21,20 @@ data class UiState(
 const val ROWS = 8
 const val COLS = 8
 
+private val LIGHT_SQUARE_COLOR = Color.White
+private val DARK_SQUARE_COLOR = Color.Green
+
 class MainViewModel : ViewModel() {
     var uiState by mutableStateOf(UiState(board = emptyArray()))
         private set
 
-    private val gameRule: GameRule = EnglishGameRule()
+    private val gameRules: GameRules = EnglishGameRules()
 
     init {
-        initBoard()
+        buildInitialBoard()
     }
 
-    private fun initBoard() {
-        val darkSquareColor = Color.Green
-        val lightSquareColor = Color.White
-
+    private fun buildInitialBoard() {
         val initialLightPiecePositions = listOf(
             Pair(0, 1), Pair(0, 3), Pair(0, 5), Pair(0, 7),
             Pair(1, 0), Pair(1, 2), Pair(1, 4), Pair(1, 6),
@@ -48,15 +51,21 @@ class MainViewModel : ViewModel() {
         (0 until ROWS).forEach { row ->
             (0 until COLS).forEach { col ->
                 val color = if (row % 2 == 0) {
-                    if (col % 2 == 0) lightSquareColor else darkSquareColor
+                    if (col % 2 == 0) LIGHT_SQUARE_COLOR else DARK_SQUARE_COLOR
                 } else {
-                    if (col % 2 != 0) lightSquareColor else darkSquareColor
+                    if (col % 2 != 0) LIGHT_SQUARE_COLOR else DARK_SQUARE_COLOR
                 }
 
                 val currentPosition = Pair(row, col)
                 val piece: Piece? = when {
-                    initialLightPiecePositions.contains(currentPosition) -> Piece.LIGHT
-                    initialDarkPiecePositions.contains(currentPosition) -> Piece.DARK
+                    initialLightPiecePositions.contains(currentPosition) -> Piece(
+                        color = PieceColor.LIGHT,
+                        rank = PieceRank.MAN
+                    )
+                    initialDarkPiecePositions.contains(currentPosition) -> Piece(
+                        color = PieceColor.DARK,
+                        rank = PieceRank.MAN
+                    )
                     else -> null // empty square
                 }
 
@@ -70,10 +79,16 @@ class MainViewModel : ViewModel() {
         uiState = UiState(board = board)
     }
 
-    fun handleClickAtPosition(rowIndex: Int, colIndex: Int) {
-        val canPick =
-            gameRule.canPick(Pair(rowIndex, colIndex), uiState.board, Piece.DARK)
-
+    fun handleClickAtPosition(position: Position) {
+        val canPick = gameRules.canPick(
+            position = position,
+            board = uiState.board,
+            // TODO: read this from somewhere
+            myPiece = Piece(
+                color = PieceColor.DARK,
+                rank = PieceRank.MAN
+            )
+        )
         Log.d("GREC_T", "Can pick: $canPick")
     }
 }
