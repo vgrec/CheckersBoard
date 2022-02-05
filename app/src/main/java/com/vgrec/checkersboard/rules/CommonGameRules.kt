@@ -93,12 +93,12 @@ class CommonGameRules : GameRules {
             && rowIndex >= 0
             && colIndex < BOARD_SIZE
         ) {
-            val square: Square = board[prevRowIndex][rightColumnIndex]
+            val square: Square = board[rowIndex][colIndex]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
-                        rowIndex = prevRowIndex,
-                        colIndex = rightColumnIndex
+                        rowIndex = rowIndex,
+                        colIndex = colIndex
                     )
                 )
             }
@@ -126,12 +126,12 @@ class CommonGameRules : GameRules {
             && rowIndex >= 0
             && colIndex >= 0
         ) {
-            val square: Square = board[prevRowIndex][leftColumnIndex]
+            val square: Square = board[rowIndex][colIndex]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
-                        rowIndex = prevRowIndex,
-                        colIndex = leftColumnIndex
+                        rowIndex = rowIndex,
+                        colIndex = colIndex
                     )
                 )
             }
