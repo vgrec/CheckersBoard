@@ -73,38 +73,57 @@ fun CheckersBoard(viewModel: MainViewModel) {
                         colIndex = colIndex
                     )
 
-                    Box(
-                        modifier = Modifier
-                            .background(color = square.color)
-                            .width(40.dp)
-                            .height(40.dp)
-                            .clickable {
-                                viewModel.handleClickAtPosition(
-                                    currentPosition
-                                )
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            text = AnnotatedString(symbol),
-                        )
-
-                        if (validPositions.contains(currentPosition)) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .background(color = Color.DarkGray.copy(alpha = 0.5f))
-                                    .width(10.dp)
-                                    .height(10.dp)
+                    SquareView(
+                        square = square,
+                        currentPosition = currentPosition,
+                        symbol = symbol,
+                        validPositions = validPositions,
+                        onViewClickedListener = {
+                            viewModel.handleClickAtPosition(
+                                position = currentPosition
                             )
                         }
-                    }
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SquareView(
+    square: Square,
+    currentPosition: Position,
+    symbol: String,
+    validPositions: List<Position>,
+    onViewClickedListener: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .background(color = square.color)
+            .width(40.dp)
+            .height(40.dp)
+            .clickable {
+                onViewClickedListener()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            text = AnnotatedString(symbol),
+        )
+
+        if (validPositions.contains(currentPosition)) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(color = Color.DarkGray.copy(alpha = 0.5f))
+                    .width(10.dp)
+                    .height(10.dp)
+            )
         }
     }
 }
