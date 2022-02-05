@@ -15,6 +15,7 @@ import com.vgrec.checkersboard.rules.GameRules
 
 data class UiState(
     val board: Array<Array<Square>>,
+    val validPositions: List<Position> = emptyList(),
 )
 
 class MainViewModel : ViewModel() {
@@ -42,6 +43,20 @@ class MainViewModel : ViewModel() {
                 rank = PieceRank.MAN
             )
         )
+
+        val validPositions: List<Position> = if (canPick) {
+            gameRules.findValidPositionsToMoveForPlayer(
+                position = position,
+                board = uiState.board
+            )
+        } else {
+            emptyList()
+        }
+
+        uiState = uiState.copy(
+            validPositions = validPositions
+        )
+
         Log.d("GREC_T", "Can pick: $canPick")
     }
 }

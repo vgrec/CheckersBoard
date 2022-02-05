@@ -44,31 +44,54 @@ class CommonGameRules : GameRules {
     private fun isNotMyPiece(myPiece: Piece, clickedPiece: Piece): Boolean =
         myPiece.color != clickedPiece.color
 
-    private fun findValidPositionsToMoveForPlayer(
+    override fun findValidPositionsToMoveForPlayer(
         position: Position,
         board: Array<Array<Square>>,
     ): List<Position> {
         val isMan: Boolean =
             board[position.rowIndex][position.colIndex].piece?.rank == PieceRank.MAN
 
-        // TODO optimization:
-        // valid positions can be determined by finding an empty spot when
-        // traversing the left and right diagonals.
-        // for man: max 1 step
-        // for king: traverse the whole diagonal
+        val maxAllowedSteps = if (isMan) 1 else BOARD_SIZE
+        val prevRowIndex = position.rowIndex - 1
+        val rightColumnIndex = position.colIndex + 1
+        val leftColumnIndex = position.colIndex - 1
 
+        return mutableListOf<Position>().apply {
+            addAll(
+                findValidPositionsOnTheRightDiagonal(
+                    board = board,
+                    maxAllowedSteps = maxAllowedSteps,
+                    prevRowIndex = prevRowIndex,
+                    rightColumnIndex = rightColumnIndex
+                )
+            )
+
+            addAll(
+                findValidPositionsOnTheLeftDiagonal(
+                    board = board,
+                    maxAllowedSteps = maxAllowedSteps,
+                    prevRowIndex = prevRowIndex,
+                    leftColumnIndex = leftColumnIndex
+                )
+            )
+        }
+    }
+
+    private fun findValidPositionsOnTheRightDiagonal(
+        board: Array<Array<Square>>,
+        maxAllowedSteps: Int,
+        prevRowIndex: Int,
+        rightColumnIndex: Int,
+    ): List<Position> {
         val validPositions = mutableListOf<Position>()
 
         var currentStep = 0
-        val maxAllowedSteps = if (isMan) 1 else BOARD_SIZE
-
-        var prevRowIndex = position.rowIndex - 1
-        var rightColumnIndex = position.colIndex + 1
-        var leftColumnIndex = position.colIndex - 1
+        var rowIndex = prevRowIndex
+        var colIndex = rightColumnIndex
 
         while (currentStep < maxAllowedSteps
-            && prevRowIndex >= 0
-            && rightColumnIndex < BOARD_SIZE
+            && rowIndex >= 0
+            && colIndex < BOARD_SIZE
         ) {
             val square: Square = board[prevRowIndex][rightColumnIndex]
             if (isSquareEmpty(square = square)) {
@@ -79,14 +102,29 @@ class CommonGameRules : GameRules {
                     )
                 )
             }
-            prevRowIndex--
-            rightColumnIndex++
+            rowIndex--
+            colIndex++
             currentStep++
         }
 
+        return validPositions
+    }
+
+    private fun findValidPositionsOnTheLeftDiagonal(
+        board: Array<Array<Square>>,
+        maxAllowedSteps: Int,
+        prevRowIndex: Int,
+        leftColumnIndex: Int,
+    ): List<Position> {
+        val validPositions = mutableListOf<Position>()
+
+        var currentStep = 0
+        var rowIndex = prevRowIndex
+        var colIndex = leftColumnIndex
+
         while (currentStep < maxAllowedSteps
-            && prevRowIndex >= 0
-            && leftColumnIndex-- >= 0
+            && rowIndex >= 0
+            && colIndex >= 0
         ) {
             val square: Square = board[prevRowIndex][leftColumnIndex]
             if (isSquareEmpty(square = square)) {
@@ -97,8 +135,8 @@ class CommonGameRules : GameRules {
                     )
                 )
             }
-            prevRowIndex--
-            leftColumnIndex--
+            rowIndex--
+            colIndex--
             currentStep++
         }
 
