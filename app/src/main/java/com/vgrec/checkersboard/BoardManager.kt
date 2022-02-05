@@ -14,7 +14,7 @@ class BoardManager {
         myPieceColor: PieceColor,
     ): Array<Array<Square>> {
         val opponentStartingPositions: List<Position> = getStartingPositionsForOpponentPieces()
-        val myStartingPositions: List<Position> = getStartingPositionsForMyPieces()
+        val myStartingPositions: List<Position> = getStartingPositionsForPlayerPieces()
 
         val board = Array(BOARD_SIZE) { Array(BOARD_SIZE) { Square(color = Color.White) } }
         for (row in 0 until BOARD_SIZE) {
@@ -56,7 +56,7 @@ class BoardManager {
         )
     }
 
-    private fun getStartingPositionsForMyPieces(): List<Position> {
+    private fun getStartingPositionsForPlayerPieces(): List<Position> {
         return getStartingPositionsForPieces(
             startingRow = 5,
             totalRows = 3,

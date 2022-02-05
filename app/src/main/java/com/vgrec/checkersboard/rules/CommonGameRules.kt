@@ -11,7 +11,7 @@ class CommonGameRules : GameRules {
     override fun canPick(
         position: Position,
         board: Array<Array<Square>>,
-        myPiece: Piece,
+        playerPiece: Piece,
     ): Boolean {
         val clickedSquare: Square = board[position.rowIndex][position.colIndex]
         val clickedPiece: Piece = clickedSquare.piece ?: return false
@@ -20,11 +20,11 @@ class CommonGameRules : GameRules {
             return false
         }
 
-        if (isNotMyPiece(myPiece, clickedPiece)) {
+        if (isNotMyPiece(playerPiece, clickedPiece)) {
             return false
         }
 
-        val validPositions = findValidPositionsToMoveFor(
+        val validPositions = findValidPositionsToMoveForPlayer(
             position = position,
             board = board
         )
@@ -44,7 +44,7 @@ class CommonGameRules : GameRules {
     private fun isNotMyPiece(myPiece: Piece, clickedPiece: Piece): Boolean =
         myPiece.color != clickedPiece.color
 
-    private fun findValidPositionsToMoveFor(
+    private fun findValidPositionsToMoveForPlayer(
         position: Position,
         board: Array<Array<Square>>,
     ): List<Position> {
@@ -59,31 +59,47 @@ class CommonGameRules : GameRules {
 
         val validPositions = mutableListOf<Position>()
 
-        val prevRowIndex = position.rowIndex - 1
-        val columnOnTheLeftIndex = position.colIndex - 1
-        val columnOnTheRightIndex = position.colIndex + 1
-        if (prevRowIndex >= 0 && columnOnTheLeftIndex >= 0) {
-            val square: Square = board[prevRowIndex][columnOnTheLeftIndex]
+        var currentStep = 0
+        val maxAllowedSteps = if (isMan) 1 else BOARD_SIZE
+
+        var prevRowIndex = position.rowIndex - 1
+        var rightColumnIndex = position.colIndex + 1
+        var leftColumnIndex = position.colIndex - 1
+
+        while (currentStep < maxAllowedSteps
+            && prevRowIndex >= 0
+            && rightColumnIndex < BOARD_SIZE
+        ) {
+            val square: Square = board[prevRowIndex][rightColumnIndex]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
                         rowIndex = prevRowIndex,
-                        colIndex = columnOnTheLeftIndex
+                        colIndex = rightColumnIndex
                     )
                 )
             }
+            prevRowIndex--
+            rightColumnIndex++
+            currentStep++
         }
 
-        if (prevRowIndex >= 0 && columnOnTheRightIndex < BOARD_SIZE) {
-            val square: Square = board[prevRowIndex][columnOnTheRightIndex]
+        while (currentStep < maxAllowedSteps
+            && prevRowIndex >= 0
+            && leftColumnIndex-- >= 0
+        ) {
+            val square: Square = board[prevRowIndex][leftColumnIndex]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
                         rowIndex = prevRowIndex,
-                        colIndex = columnOnTheRightIndex
+                        colIndex = leftColumnIndex
                     )
                 )
             }
+            prevRowIndex--
+            leftColumnIndex--
+            currentStep++
         }
 
         return validPositions

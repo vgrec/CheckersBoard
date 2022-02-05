@@ -37,7 +37,7 @@ class MainViewModel : ViewModel() {
             position = position,
             board = uiState.board,
             // TODO: read this from somewhere
-            myPiece = Piece(
+            playerPiece = Piece(
                 color = PieceColor.DARK,
                 rank = PieceRank.MAN
             )
