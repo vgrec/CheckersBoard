@@ -16,6 +16,7 @@ import com.vgrec.checkersboard.rules.GameRules
 data class UiState(
     val board: Array<Array<Square>>,
     val validPositions: List<Position> = emptyList(),
+    val clickedPosition: Position? = null,
 )
 
 class MainViewModel : ViewModel() {
@@ -34,6 +35,25 @@ class MainViewModel : ViewModel() {
     }
 
     fun handleClickAtPosition(position: Position) {
+        if (uiState.validPositions.isNotEmpty()) {
+            if (uiState.validPositions.contains(position)) {
+                uiState.clickedPosition?.let {
+                    val board: Array<Array<Square>> = gameRules.place(
+                        position = position,
+                        prevPosition = it,
+                        board = uiState.board
+                    )
+                    uiState = uiState.copy(
+                        board = board,
+                        validPositions = emptyList(),
+                        clickedPosition = null
+                    )
+                    return
+                }
+            }
+        }
+
+
         val canPick = gameRules.canPick(
             position = position,
             board = uiState.board,
@@ -54,7 +74,8 @@ class MainViewModel : ViewModel() {
         }
 
         uiState = uiState.copy(
-            validPositions = validPositions
+            validPositions = validPositions,
+            clickedPosition = if (validPositions.isNotEmpty()) position else null
         )
 
         Log.d("GREC_T", "Can pick: $canPick")

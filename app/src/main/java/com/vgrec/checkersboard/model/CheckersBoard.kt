@@ -1,5 +1,5 @@
 package com.vgrec.checkersboard.model
 
-data class Board(
+data class CheckersBoard(
     val board: Array<Array<Square>>,
 )

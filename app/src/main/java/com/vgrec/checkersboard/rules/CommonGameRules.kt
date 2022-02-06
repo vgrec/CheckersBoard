@@ -156,7 +156,15 @@ class CommonGameRules : GameRules {
         TODO("Not yet implemented")
     }
 
-    override fun place(position: Position, board: Array<Array<Square>>) {
-        TODO("Not yet implemented")
+    override fun place(
+        position: Position,
+        prevPosition: Position,
+        board: Array<Array<Square>>,
+    ): Array<Array<Square>> {
+        val square = board[prevPosition.rowIndex][prevPosition.colIndex]
+        board[position.rowIndex][position.colIndex] = square
+        board[prevPosition.rowIndex][prevPosition.colIndex] = square.copy(piece = null)
+
+        return board
     }
 }
