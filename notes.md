@@ -7,6 +7,9 @@
 
 ## TODO:
 
+- Position the board center of the screen
+- Board size should be dynamic depending on the screen size
+- Use round shapes for pieces
 - Implement move piece logic for my player
 - ~~Rewrite `canPick` logic so that it traverses the diagonals and accounts for Man and Kings~~
 - ~~Programmatically detect initial positions of pieces~~
@@ -22,7 +25,10 @@ player, opponent
 ## Features
 
 - It should be able to play checkers with yourself
-- It should have the possibility to customize the AI
+- It should have the possibility to customize the AI level:
+   - Player 1: P1 knows how the rules of the games but he has to win a game yet
+   - Player 2: P2 has won two times in the school championship ...
+   - Player 3: P3 ...
 - Customizable board
 - Show lessons
 - Highlight squares when a move is made

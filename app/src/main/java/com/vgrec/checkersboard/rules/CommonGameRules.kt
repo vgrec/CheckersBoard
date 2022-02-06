@@ -51,6 +51,8 @@ class CommonGameRules : GameRules {
         val isMan: Boolean =
             board[position.rowIndex][position.colIndex].piece?.rank == PieceRank.MAN
 
+        // TODO: it has bug that a king can jump over its own pieces
+
         val maxAllowedSteps = if (isMan) 1 else BOARD_SIZE
         val prevRowIndex = position.rowIndex - 1
         val rightColumnIndex = position.colIndex + 1
