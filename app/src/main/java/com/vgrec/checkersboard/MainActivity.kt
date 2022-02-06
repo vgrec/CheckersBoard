@@ -41,7 +41,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             CheckersBoardTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    CheckersBoard(viewModel = mainViewModel)
+                    Box(
+                        modifier = Modifier
+                            .background(color = SCREEN_BACKGROUND_COLOR)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CheckersBoard(viewModel = mainViewModel)
+                    }
                 }
             }
         }
@@ -78,6 +86,7 @@ fun CheckersBoard(viewModel: MainViewModel) {
                         currentPosition = currentPosition,
                         symbol = symbol,
                         validPositions = validPositions,
+                        squareWidth = viewModel.calculateSquareWidth(),
                         onViewClickedListener = {
                             viewModel.handleClickAtPosition(
                                 position = currentPosition
@@ -96,13 +105,14 @@ private fun SquareView(
     currentPosition: Position,
     symbol: String,
     validPositions: List<Position>,
+    squareWidth: Int,
     onViewClickedListener: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .background(color = square.color)
-            .width(40.dp)
-            .height(40.dp)
+            .width(squareWidth.dp)
+            .height(squareWidth.dp)
             .clickable {
                 onViewClickedListener()
             },

@@ -1,5 +1,6 @@
 package com.vgrec.checkersboard
 
+import android.content.res.Resources
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -78,4 +79,9 @@ class MainViewModel : ViewModel() {
 
     private fun canPlace(position: Position): Boolean =
         uiState.prevClickedPosition != null && uiState.validPositions.contains(position)
+
+    fun calculateSquareWidth(): Int {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        return (displayMetrics.widthPixels / BOARD_SIZE).toDp
+    }
 }
