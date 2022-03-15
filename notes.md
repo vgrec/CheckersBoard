@@ -7,14 +7,14 @@
 
 ## TODO:
 
-- Position the board center of the screen
-- Board size should be dynamic depending on the screen size
 - Use round shapes for pieces
 - Implement move piece logic for my player
+- Detect the the winner
+- ~~Position the board center of the screen~~
+- ~~Board size should be dynamic depending on the screen size~~
 - ~~Rewrite `canPick` logic so that it traverses the diagonals and accounts for Man and Kings~~
 - ~~Programmatically detect initial positions of pieces~~
 - ~~Show valid positions for my player where a piece can move when clicking on it~~
-- Detect the the winner
 
 
 ## Buzz words
