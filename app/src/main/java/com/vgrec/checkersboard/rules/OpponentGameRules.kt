@@ -125,7 +125,7 @@ class OpponentGameRules : GameRules {
         var colIndex = leftColumnIndex
 
         while (currentStep < maxAllowedSteps
-            && rowIndex >= 0
+            && rowIndex < BOARD_SIZE
             && colIndex < BOARD_SIZE
         ) {
             val square: Square = board[rowIndex][colIndex]
@@ -137,7 +137,7 @@ class OpponentGameRules : GameRules {
                     )
                 )
             }
-            rowIndex--
+            rowIndex++
             colIndex++
             currentStep++
         }

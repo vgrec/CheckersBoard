@@ -54,7 +54,7 @@ class PlayerGameRules : GameRules {
         // TODO: it has bug that a king can jump over its own pieces
 
         val maxAllowedSteps = if (isMan) 1 else BOARD_SIZE
-        val prevRowIndex = position.rowIndex - 1
+        val nextRowIndex = position.rowIndex - 1
         val rightColumnIndex = position.colIndex + 1
         val leftColumnIndex = position.colIndex - 1
 
@@ -63,7 +63,7 @@ class PlayerGameRules : GameRules {
                 findValidPositionsOnTheRightDiagonal(
                     board = board,
                     maxAllowedSteps = maxAllowedSteps,
-                    prevRowIndex = prevRowIndex,
+                    nextRowIndex = nextRowIndex,
                     rightColumnIndex = rightColumnIndex
                 )
             )
@@ -72,7 +72,7 @@ class PlayerGameRules : GameRules {
                 findValidPositionsOnTheLeftDiagonal(
                     board = board,
                     maxAllowedSteps = maxAllowedSteps,
-                    prevRowIndex = prevRowIndex,
+                    nextRowIndex = nextRowIndex,
                     leftColumnIndex = leftColumnIndex
                 )
             )
@@ -82,13 +82,13 @@ class PlayerGameRules : GameRules {
     private fun findValidPositionsOnTheRightDiagonal(
         board: Array<Array<Square>>,
         maxAllowedSteps: Int,
-        prevRowIndex: Int,
+        nextRowIndex: Int,
         rightColumnIndex: Int,
     ): List<Position> {
         val validPositions = mutableListOf<Position>()
 
         var currentStep = 0
-        var rowIndex = prevRowIndex
+        var rowIndex = nextRowIndex
         var colIndex = rightColumnIndex
 
         while (currentStep < maxAllowedSteps
@@ -115,13 +115,13 @@ class PlayerGameRules : GameRules {
     private fun findValidPositionsOnTheLeftDiagonal(
         board: Array<Array<Square>>,
         maxAllowedSteps: Int,
-        prevRowIndex: Int,
+        nextRowIndex: Int,
         leftColumnIndex: Int,
     ): List<Position> {
         val validPositions = mutableListOf<Position>()
 
         var currentStep = 0
-        var rowIndex = prevRowIndex
+        var rowIndex = nextRowIndex
         var colIndex = leftColumnIndex
 
         while (currentStep < maxAllowedSteps
