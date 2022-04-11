@@ -6,3 +6,5 @@ data class Square(
     val color: Color,
     val piece: Piece? = null,
 )
+
+fun Square.isNotEmpty() = piece != null

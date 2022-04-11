@@ -25,6 +25,7 @@ class MainViewModel : ViewModel() {
 
     private val gameRules: GameRules = CommonGameRules()
     private val boardManager = BoardManager()
+    private var playerShouldMove = true
 
     init {
         val board = boardManager.buildInitialBoard(

@@ -145,19 +145,6 @@ class CommonGameRules : GameRules {
         return validPositions
     }
 
-
-    override fun canPlace(
-        position: Position,
-        board: Array<Array<Square>>,
-        myPiece: Piece,
-    ): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun pick(position: Position, board: Array<Array<Square>>) {
-        TODO("Not yet implemented")
-    }
-
     override fun place(
         position: Position,
         prevPosition: Position,

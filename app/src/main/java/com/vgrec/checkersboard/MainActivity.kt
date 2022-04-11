@@ -1,6 +1,5 @@
 package com.vgrec.checkersboard
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,18 +18,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
+import com.vgrec.checkersboard.model.isNotEmpty
 import com.vgrec.checkersboard.ui.theme.CheckersBoardTheme
 
 @ExperimentalFoundationApi
@@ -40,7 +39,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startActivity(Intent(this, TestActivity::class.java))
+//        startActivity(Intent(this, TestActivity::class.java))
 
         setContent {
             CheckersBoardTheme {
@@ -71,15 +70,6 @@ fun CheckersBoard(viewModel: MainViewModel) {
             Row {
                 (0 until BOARD_SIZE).map { colIndex: Int ->
                     val square: Square = board[rowIndex][colIndex]
-
-                    val symbol: String = square.piece?.let { piece ->
-                        if (piece.color == PieceColor.LIGHT) {
-                            "L"
-                        } else {
-                            "D"
-                        }
-                    } ?: ""
-
                     val currentPosition = Position(
                         rowIndex = rowIndex,
                         colIndex = colIndex
@@ -88,7 +78,6 @@ fun CheckersBoard(viewModel: MainViewModel) {
                     SquareView(
                         square = square,
                         currentPosition = currentPosition,
-                        symbol = symbol,
                         validPositions = validPositions,
                         squareWidth = viewModel.calculateSquareWidth(),
                         onViewClickedListener = {
@@ -107,7 +96,6 @@ fun CheckersBoard(viewModel: MainViewModel) {
 private fun SquareView(
     square: Square,
     currentPosition: Position,
-    symbol: String,
     validPositions: List<Position>,
     squareWidth: Int,
     onViewClickedListener: () -> Unit,
@@ -122,22 +110,37 @@ private fun SquareView(
             },
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = AnnotatedString(symbol),
-        )
+        if (square.isNotEmpty()) {
+            val piece: Piece = square.piece!!
+            if (piece.color == PieceColor.LIGHT) {
+                SimpleCircleShape(
+                    diameter = 30.dp,
+                    color = Color(0xfff0eee1)
+                )
+            } else { // DARK
+                SimpleCircleShape(
+                    diameter = 30.dp,
+                    color = Color(0xff473d3a)
+                )
+            }
+        }
 
         if (validPositions.contains(currentPosition)) {
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(color = Color.DarkGray.copy(alpha = 0.5f))
-                    .width(10.dp)
-                    .height(10.dp)
+            SimpleCircleShape(
+                diameter = 10.dp,
+                color = Color.DarkGray.copy(alpha = 0.5f)
             )
         }
     }
+}
+
+@Composable
+private fun SimpleCircleShape(diameter: Dp, color: Color) {
+    Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(color = color)
+            .width(diameter)
+            .height(diameter)
+    )
 }
