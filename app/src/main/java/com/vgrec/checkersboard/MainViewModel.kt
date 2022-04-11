@@ -12,6 +12,7 @@ import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
 import com.vgrec.checkersboard.rules.PlayerGameRules
 import com.vgrec.checkersboard.rules.GameRules
+import com.vgrec.checkersboard.rules.OpponentGameRules
 
 data class UiState(
     val board: Array<Array<Square>>,
@@ -23,7 +24,7 @@ class MainViewModel : ViewModel() {
     var uiState by mutableStateOf(UiState(board = emptyArray()))
         private set
 
-    private val gameRules: GameRules = PlayerGameRules()
+    private val gameRules: GameRules = OpponentGameRules()
     private val boardManager = BoardManager()
     private var playerShouldMove = true
 
@@ -37,6 +38,16 @@ class MainViewModel : ViewModel() {
 
     fun handleClickAtPosition(position: Position) {
         when {
+            canPick(position = position) -> {
+                val validPositions: List<Position> = gameRules.findValidPositionsToMoveForPlayer(
+                    position = position,
+                    board = uiState.board
+                )
+                uiState = uiState.copy(
+                    validPositions = validPositions,
+                    prevClickedPosition = position
+                )
+            }
             canPlace(position = position) -> {
                 val updatedBoard: Array<Array<Square>> = gameRules.place(
                     position = position,
@@ -47,16 +58,6 @@ class MainViewModel : ViewModel() {
                     board = updatedBoard,
                     validPositions = emptyList(),
                     prevClickedPosition = null
-                )
-            }
-            canPick(position = position) -> {
-                val validPositions: List<Position> = gameRules.findValidPositionsToMoveForPlayer(
-                    position = position,
-                    board = uiState.board
-                )
-                uiState = uiState.copy(
-                    validPositions = validPositions,
-                    prevClickedPosition = position
                 )
             }
             else -> {
@@ -73,7 +74,7 @@ class MainViewModel : ViewModel() {
             position = position,
             board = uiState.board,
             playerPiece = Piece(  // TODO: read this from somewhere
-                color = PieceColor.DARK,
+                color = PieceColor.LIGHT,
                 rank = PieceRank.MAN
             )
         )

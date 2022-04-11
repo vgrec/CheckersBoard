@@ -34,6 +34,7 @@ player, opponent
 - Highlight squares when a move is made
 
 ## Resources
+https://www.gamesver.com/the-rules-of-checkers-simply-explained-for-beginners/
 https://lidraughts.org/  
 https://lidraughts.org/variant/standard
 https://lidraughts.org/variant/russian  
