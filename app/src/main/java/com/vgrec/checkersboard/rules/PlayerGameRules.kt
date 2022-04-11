@@ -7,7 +7,7 @@ import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
 
-class CommonGameRules : GameRules {
+class PlayerGameRules : GameRules {
     override fun canPick(
         position: Position,
         board: Array<Array<Square>>,

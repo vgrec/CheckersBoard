@@ -10,7 +10,7 @@ import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
-import com.vgrec.checkersboard.rules.CommonGameRules
+import com.vgrec.checkersboard.rules.PlayerGameRules
 import com.vgrec.checkersboard.rules.GameRules
 
 data class UiState(
@@ -23,7 +23,7 @@ class MainViewModel : ViewModel() {
     var uiState by mutableStateOf(UiState(board = emptyArray()))
         private set
 
-    private val gameRules: GameRules = CommonGameRules()
+    private val gameRules: GameRules = PlayerGameRules()
     private val boardManager = BoardManager()
     private var playerShouldMove = true
 
