@@ -2,6 +2,7 @@ package com.vgrec.checkersboard.rules
 
 import android.util.Log
 import com.vgrec.checkersboard.BOARD_SIZE
+import com.vgrec.checkersboard.model.Node
 import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
@@ -58,6 +59,15 @@ class PlayerGameRules : GameRules {
         val rightColumnIndex = position.colIndex + 1
         val leftColumnIndex = position.colIndex - 1
 
+        val root = Node(
+            currentPosition = position
+        )
+
+        checkIfCanCapture(
+            board = board,
+            currentNode = root
+        )
+
         return mutableListOf<Position>().apply {
             addAll(
                 findValidPositionsOnTheRightDiagonal(
@@ -77,6 +87,14 @@ class PlayerGameRules : GameRules {
                 )
             )
         }
+    }
+
+    private fun checkIfCanCapture(
+        board: Array<Array<Square>>,
+        currentNode: Node,
+    ) {
+        val topLefPosition: Position
+        val topRightPosition: Position
     }
 
     private fun findValidPositionsOnTheRightDiagonal(
