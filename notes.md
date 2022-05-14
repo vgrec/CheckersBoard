@@ -7,6 +7,9 @@
 
 ## TODO:
 
+* Debug Menu
+- Toggle square numeration
+
 Capture 1 piece with man:
 1. Check the surrounding pieces ("checked position"):
  - check top-left,

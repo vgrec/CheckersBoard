@@ -16,6 +16,9 @@ class BoardManager {
         val opponentStartingPositions: List<Position> = getStartingPositionsForOpponentPieces()
         val myStartingPositions: List<Position> = getStartingPositionsForPlayerPieces()
 
+        // http://www.bobnewell.net/nucleus/checkers.php?itemid=289
+        var squareNumber = 1
+
         val board = Array(BOARD_SIZE) { Array(BOARD_SIZE) { Square(color = Color.White) } }
         for (row in 0 until BOARD_SIZE) {
             for (col in 0 until BOARD_SIZE) {
@@ -40,7 +43,12 @@ class BoardManager {
 
                 board[row][col] = Square(
                     color = color,
-                    piece = piece
+                    piece = piece,
+                    number = if (color == DARK_SQUARE_COLOR) {
+                        squareNumber++
+                    } else {
+                        null
+                    }
                 )
             }
         }

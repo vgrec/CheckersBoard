@@ -43,7 +43,8 @@ class MainViewModel : ViewModel() {
             canPick(position = position) -> {
                 val validPositions: List<Position> = gameRules.findValidPositionsToMoveForPlayer(
                     position = position,
-                    board = uiState.board
+                    board = uiState.board,
+                    playerColor = playerColor
                 )
                 uiState = uiState.copy(
                     validPositions = validPositions,
@@ -52,7 +53,7 @@ class MainViewModel : ViewModel() {
             }
             canPlace(position = position) -> {
                 val updatedBoard: Array<Array<Square>> = gameRules.place(
-                    position = position,
+                    newPosition = position,
                     prevPosition = uiState.prevClickedPosition!!,
                     board = uiState.board
                 )

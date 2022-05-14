@@ -4,9 +4,15 @@ import android.util.Log
 import com.vgrec.checkersboard.BOARD_SIZE
 import com.vgrec.checkersboard.model.Node
 import com.vgrec.checkersboard.model.Piece
+import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
+import com.vgrec.checkersboard.model.isNotEmpty
+import com.vgrec.checkersboard.model.isValid
+import com.vgrec.checkersboard.model.topLeftPosition
+import com.vgrec.checkersboard.model.topRightPosition
+import java.lang.StringBuilder
 
 class PlayerGameRules : GameRules {
     override fun canPick(
@@ -26,6 +32,7 @@ class PlayerGameRules : GameRules {
         }
 
         val validPositions = findValidPositionsToMoveForPlayer(
+            playerColor = playerPiece.color,
             position = position,
             board = board
         )
@@ -46,6 +53,7 @@ class PlayerGameRules : GameRules {
         myPiece.color != clickedPiece.color
 
     override fun findValidPositionsToMoveForPlayer(
+        playerColor: PieceColor,
         position: Position,
         board: Array<Array<Square>>,
     ): List<Position> {
@@ -59,14 +67,19 @@ class PlayerGameRules : GameRules {
         val rightColumnIndex = position.colIndex + 1
         val leftColumnIndex = position.colIndex - 1
 
+        val square = board[position.rowIndex][position.colIndex]
         val root = Node(
-            currentPosition = position
+            currentPosition = position,
+            squareNumber = square.number
         )
 
-        checkIfCanCapture(
+        findCaptureMoves(
+            playerPiece = playerColor,
             board = board,
             currentNode = root
         )
+
+        printTree(root = root, mutableListOf())
 
         return mutableListOf<Position>().apply {
             addAll(
@@ -89,12 +102,102 @@ class PlayerGameRules : GameRules {
         }
     }
 
-    private fun checkIfCanCapture(
+    private fun printTree(root: Node, list: MutableList<Node>) {
+        list.add(root)
+
+        if (root.children.isEmpty()) {
+            val sb = StringBuilder()
+            list.forEach {
+                sb.append(it.squareNumber)
+                sb.append(" -> ")
+            }
+            Log.d("GREC_T", "Path: $sb")
+        } else {
+            root.children.forEach {
+                printTree(it, list)
+                list.removeLast()
+            }
+        }
+    }
+
+    private fun findCaptureMoves(
+        playerPiece: PieceColor,
         board: Array<Array<Square>>,
         currentNode: Node,
     ) {
-        val topLefPosition: Position
-        val topRightPosition: Position
+        val current: Position = currentNode.currentPosition
+
+        val topLeftPosition = current.topLeftPosition()
+        val topLeftJumpPosition = current.topLeftPosition(2)
+        if (canCapture(
+                playerColor = playerPiece,
+                board = board,
+                nextPosition = topLeftPosition,
+                jumpPosition = topLeftJumpPosition)
+        ) {
+            val square = board[topLeftJumpPosition.rowIndex][topLeftJumpPosition.colIndex]
+
+            val node = Node(
+                currentPosition = topLeftJumpPosition,
+                capturePosition = topLeftPosition,
+                squareNumber = square.number
+            )
+
+            currentNode.children.add(node)
+
+            findCaptureMoves(
+                playerPiece = playerPiece,
+                board = board,
+                currentNode = node
+            )
+        }
+
+        val topRightPosition = current.topRightPosition()
+        val topRightJumpPosition = current.topRightPosition(2)
+        if (canCapture(
+                playerColor = playerPiece,
+                board = board,
+                nextPosition = topRightPosition,
+                jumpPosition = topRightJumpPosition)
+        ) {
+            val square = board[topRightJumpPosition.rowIndex][topRightJumpPosition.colIndex]
+
+            val node = Node(
+                currentPosition = topRightJumpPosition,
+                capturePosition = topRightPosition,
+                squareNumber = square.number
+            )
+
+            currentNode.children.add(node)
+
+            findCaptureMoves(
+                playerPiece = playerPiece,
+                board = board,
+                currentNode = node
+            )
+        }
+
+    }
+
+    private fun canCapture(
+        playerColor: PieceColor,
+        board: Array<Array<Square>>,
+        nextPosition: Position,
+        jumpPosition: Position,
+    ): Boolean {
+
+        if (nextPosition.isValid() && jumpPosition.isValid()) {
+            val nextSquare: Square =
+                board[nextPosition.rowIndex][nextPosition.colIndex]
+            val jumpSquare: Square =
+                board[jumpPosition.rowIndex][jumpPosition.colIndex]
+
+            return nextSquare.isNotEmpty()
+                    && nextSquare.piece!!.color != playerColor
+                    && jumpSquare.piece == null
+        }
+
+        return false
     }
 
     private fun findValidPositionsOnTheRightDiagonal(
@@ -164,13 +267,15 @@ class PlayerGameRules : GameRules {
     }
 
     override fun place(
-        position: Position,
+        newPosition: Position,
         prevPosition: Position,
         board: Array<Array<Square>>,
     ): Array<Array<Square>> {
-        val square = board[prevPosition.rowIndex][prevPosition.colIndex]
-        board[position.rowIndex][position.colIndex] = square
-        board[prevPosition.rowIndex][prevPosition.colIndex] = square.copy(piece = null)
+        val prevSquare = board[prevPosition.rowIndex][prevPosition.colIndex]
+        val newSquareNumber = board[newPosition.rowIndex][newPosition.colIndex].number
+        board[newPosition.rowIndex][newPosition.colIndex] =
+            prevSquare.copy(number = newSquareNumber)
+        board[prevPosition.rowIndex][prevPosition.colIndex] = prevSquare.copy(piece = null)
 
         return board
     }

@@ -3,6 +3,7 @@ package com.vgrec.checkersboard.rules
 import android.util.Log
 import com.vgrec.checkersboard.BOARD_SIZE
 import com.vgrec.checkersboard.model.Piece
+import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
@@ -25,6 +26,7 @@ class OpponentGameRules : GameRules {
         }
 
         val validPositions = findValidPositionsToMoveForPlayer(
+            playerColor = playerPiece.color,
             position = position,
             board = board
         )
@@ -45,8 +47,9 @@ class OpponentGameRules : GameRules {
         myPiece.color != clickedPiece.color
 
     override fun findValidPositionsToMoveForPlayer(
+        playerColor: PieceColor,
         position: Position,
-        board: Array<Array<Square>>,
+        board: Array<Array<Square>>
     ): List<Position> {
         val isMan: Boolean =
             board[position.rowIndex][position.colIndex].piece?.rank == PieceRank.MAN
@@ -146,13 +149,15 @@ class OpponentGameRules : GameRules {
     }
 
     override fun place(
-        position: Position,
+        newPosition: Position,
         prevPosition: Position,
         board: Array<Array<Square>>,
     ): Array<Array<Square>> {
-        val square = board[prevPosition.rowIndex][prevPosition.colIndex]
-        board[position.rowIndex][position.colIndex] = square
-        board[prevPosition.rowIndex][prevPosition.colIndex] = square.copy(piece = null)
+        val prevSquare = board[prevPosition.rowIndex][prevPosition.colIndex]
+        val newSquareNumber = board[newPosition.rowIndex][newPosition.colIndex].number
+        board[newPosition.rowIndex][newPosition.colIndex] =
+            prevSquare.copy(number = newSquareNumber)
+        board[prevPosition.rowIndex][prevPosition.colIndex] = prevSquare.copy(piece = null)
 
         return board
     }
