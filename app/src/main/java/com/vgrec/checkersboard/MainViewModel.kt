@@ -10,9 +10,9 @@ import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
 import com.vgrec.checkersboard.model.Square
-import com.vgrec.checkersboard.rules.PlayerGameRules
 import com.vgrec.checkersboard.rules.GameRules
 import com.vgrec.checkersboard.rules.OpponentGameRules
+import com.vgrec.checkersboard.rules.PlayerGameRules
 
 data class UiState(
     val board: Array<Array<Square>>,
@@ -24,9 +24,10 @@ class MainViewModel : ViewModel() {
     var uiState by mutableStateOf(UiState(board = emptyArray()))
         private set
 
-    private val gameRules: GameRules = OpponentGameRules()
+    private lateinit var gameRules: GameRules //  = PlayerGameRules() // OpponentGameRules() - color = PieceColor.DARK : at 77
+    private lateinit var playerColor: PieceColor
     private val boardManager = BoardManager()
-    private var playerShouldMove = true
+    private var myPlayerShouldMove: Boolean = true
 
     init {
         val board = boardManager.buildInitialBoard(
@@ -34,6 +35,7 @@ class MainViewModel : ViewModel() {
             myPieceColor = PieceColor.DARK
         )
         uiState = UiState(board = board)
+        changerPlayerTurn()
     }
 
     fun handleClickAtPosition(position: Position) {
@@ -59,6 +61,7 @@ class MainViewModel : ViewModel() {
                     validPositions = emptyList(),
                     prevClickedPosition = null
                 )
+                changerPlayerTurn()
             }
             else -> {
                 uiState = uiState.copy(
@@ -74,7 +77,7 @@ class MainViewModel : ViewModel() {
             position = position,
             board = uiState.board,
             playerPiece = Piece(  // TODO: read this from somewhere
-                color = PieceColor.LIGHT,
+                color = playerColor,
                 rank = PieceRank.MAN
             )
         )
@@ -85,5 +88,20 @@ class MainViewModel : ViewModel() {
     fun calculateSquareWidth(): Int {
         val displayMetrics = Resources.getSystem().displayMetrics
         return (displayMetrics.widthPixels / BOARD_SIZE).toDp
+    }
+
+    /**
+     * Switches between my player and opponent player
+     */
+    private fun changerPlayerTurn() {
+        if (myPlayerShouldMove) {
+            gameRules = PlayerGameRules()
+            playerColor = PieceColor.DARK
+        } else {
+            gameRules = OpponentGameRules()
+            playerColor = PieceColor.LIGHT
+        }
+
+        myPlayerShouldMove = !myPlayerShouldMove
     }
 }

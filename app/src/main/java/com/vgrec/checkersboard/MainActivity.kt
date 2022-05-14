@@ -127,8 +127,8 @@ private fun SquareView(
 
         if (validPositions.contains(currentPosition)) {
             SimpleCircleShape(
-                diameter = 10.dp,
-                color = Color.DarkGray.copy(alpha = 0.5f)
+                diameter = 15.dp,
+                color = Color.DarkGray.copy(alpha = 0.4f)
             )
         }
     }
