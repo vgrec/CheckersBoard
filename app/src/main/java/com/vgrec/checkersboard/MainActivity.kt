@@ -71,11 +71,11 @@ fun CheckersBoard(viewModel: MainViewModel) {
         items((0 until BOARD_SIZE).toList()) { rowIndex: Int ->
             Row {
                 (0 until BOARD_SIZE).map { colIndex: Int ->
-                    val square: Square = board[rowIndex][colIndex]
                     val currentPosition = Position(
                         rowIndex = rowIndex,
                         colIndex = colIndex
                     )
+                    val square: Square = board[currentPosition]
 
                     SquareView(
                         square = square,

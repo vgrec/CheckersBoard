@@ -1,6 +1,7 @@
 package com.vgrec.checkersboard
 
 import androidx.compose.ui.graphics.Color
+import com.vgrec.checkersboard.model.Board
 import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
@@ -12,7 +13,7 @@ class BoardManager {
     fun buildInitialBoard(
         opponentPieceColor: PieceColor,
         myPieceColor: PieceColor,
-    ): Array<Array<Square>> {
+    ): Board {
         val opponentStartingPositions: List<Position> = getStartingPositionsForOpponentPieces()
         val myStartingPositions: List<Position> = getStartingPositionsForPlayerPieces()
 
@@ -53,7 +54,7 @@ class BoardManager {
             }
         }
 
-        return board
+        return Board(board = board)
     }
 
     private fun getStartingPositionsForOpponentPieces(): List<Position> {

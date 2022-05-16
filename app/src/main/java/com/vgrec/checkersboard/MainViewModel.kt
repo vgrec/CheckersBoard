@@ -5,23 +5,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.vgrec.checkersboard.model.Board
 import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
 import com.vgrec.checkersboard.model.Position
-import com.vgrec.checkersboard.model.Square
 import com.vgrec.checkersboard.rules.GameRules
 import com.vgrec.checkersboard.rules.OpponentGameRules
 import com.vgrec.checkersboard.rules.PlayerGameRules
 
 data class UiState(
-    val board: Array<Array<Square>>,
+    val board: Board,
     val validPositions: List<Position> = emptyList(),
     val prevClickedPosition: Position? = null,
 )
 
 class MainViewModel : ViewModel() {
-    var uiState by mutableStateOf(UiState(board = emptyArray()))
+    var uiState by mutableStateOf(UiState(board = Board()))
         private set
 
     private lateinit var gameRules: GameRules //  = PlayerGameRules() // OpponentGameRules() - color = PieceColor.DARK : at 77
@@ -52,7 +52,7 @@ class MainViewModel : ViewModel() {
                 )
             }
             canPlace(position = position) -> {
-                val updatedBoard: Array<Array<Square>> = gameRules.place(
+                val updatedBoard: Board = gameRules.place(
                     newPosition = position,
                     prevPosition = uiState.prevClickedPosition!!,
                     board = uiState.board

@@ -1,7 +1,15 @@
 package com.vgrec.checkersboard.model
 
-data class Board(
-    val board: Array<Array<Square>>,
+class Board(
+    private val board: Array<Array<Square>> = emptyArray(),
+) {
+    operator fun get(position: Position): Square =
+        board[position.rowIndex][position.colIndex]
 
-    // be able to retrive by: board[position]
-)
+    operator fun set(position: Position, value: Square) {
+        board[position.rowIndex][position.colIndex] = value
+    }
+
+    fun getByIndexes(rowIndex: Int, colIndex: Int): Square =
+        board[rowIndex][colIndex]
+}

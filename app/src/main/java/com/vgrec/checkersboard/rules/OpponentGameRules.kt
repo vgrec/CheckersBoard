@@ -2,6 +2,7 @@ package com.vgrec.checkersboard.rules
 
 import android.util.Log
 import com.vgrec.checkersboard.BOARD_SIZE
+import com.vgrec.checkersboard.model.Board
 import com.vgrec.checkersboard.model.Piece
 import com.vgrec.checkersboard.model.PieceColor
 import com.vgrec.checkersboard.model.PieceRank
@@ -11,10 +12,10 @@ import com.vgrec.checkersboard.model.Square
 class OpponentGameRules : GameRules {
     override fun canPick(
         position: Position,
-        board: Array<Array<Square>>,
+        board: Board,
         playerPiece: Piece,
     ): Boolean {
-        val clickedSquare: Square = board[position.rowIndex][position.colIndex]
+        val clickedSquare: Square = board[position]
         val clickedPiece: Piece = clickedSquare.piece ?: return false
 
         if (isSquareEmpty(clickedSquare)) {
@@ -49,10 +50,10 @@ class OpponentGameRules : GameRules {
     override fun findValidPositionsToMoveForPlayer(
         playerColor: PieceColor,
         position: Position,
-        board: Array<Array<Square>>
+        board: Board,
     ): List<Position> {
         val isMan: Boolean =
-            board[position.rowIndex][position.colIndex].piece?.rank == PieceRank.MAN
+            board[position].piece?.rank == PieceRank.MAN
 
         // TODO: it has bug that a king can jump over its own pieces
 
@@ -83,7 +84,7 @@ class OpponentGameRules : GameRules {
     }
 
     private fun findValidPositionsOnTheRightDiagonal(
-        board: Array<Array<Square>>,
+        board: Board,
         maxAllowedSteps: Int,
         nextRowIndex: Int,
         rightColumnIndex: Int,
@@ -98,7 +99,7 @@ class OpponentGameRules : GameRules {
             && rowIndex < BOARD_SIZE
             && colIndex >= 0
         ) {
-            val square: Square = board[rowIndex][colIndex]
+            val square: Square = board[Position(rowIndex = rowIndex, colIndex = colIndex)]
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
@@ -116,7 +117,7 @@ class OpponentGameRules : GameRules {
     }
 
     private fun findValidPositionsOnTheLeftDiagonal(
-        board: Array<Array<Square>>,
+        board: Board,
         maxAllowedSteps: Int,
         nextRowIndex: Int,
         leftColumnIndex: Int,
@@ -131,7 +132,7 @@ class OpponentGameRules : GameRules {
             && rowIndex < BOARD_SIZE
             && colIndex < BOARD_SIZE
         ) {
-            val square: Square = board[rowIndex][colIndex]
+            val square: Square = board.getByIndexes(rowIndex, colIndex)
             if (isSquareEmpty(square = square)) {
                 validPositions.add(
                     Position(
@@ -151,13 +152,12 @@ class OpponentGameRules : GameRules {
     override fun place(
         newPosition: Position,
         prevPosition: Position,
-        board: Array<Array<Square>>,
-    ): Array<Array<Square>> {
-        val prevSquare = board[prevPosition.rowIndex][prevPosition.colIndex]
-        val newSquareNumber = board[newPosition.rowIndex][newPosition.colIndex].number
-        board[newPosition.rowIndex][newPosition.colIndex] =
-            prevSquare.copy(number = newSquareNumber)
-        board[prevPosition.rowIndex][prevPosition.colIndex] = prevSquare.copy(piece = null)
+        board: Board,
+    ): Board {
+        val prevSquare = board[prevPosition]
+        val newSquareNumber = board[newPosition].number
+        board[newPosition] = prevSquare.copy(number = newSquareNumber)
+        board[prevPosition] = prevSquare.copy(piece = null)
 
         return board
     }
